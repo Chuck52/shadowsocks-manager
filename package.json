@@ -64,7 +64,7 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "socks": "^2.2.2",
-    "sqlite3": "^4.0.3",
+    "sqlite3": "^4.0.8",
     "uuid": "^3.3.2",
     "web-push": "^3.3.3",
     "ws": "^6.1.0"

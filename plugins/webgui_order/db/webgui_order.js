@@ -91,6 +91,7 @@ const createTable = async () => {
     table.integer('cycle');
     table.float('alipay');
     table.float('paypal');
+    table.float('smt');
     table.bigInteger('flow');
     table.bigInteger('refTime');
     table.string('server');

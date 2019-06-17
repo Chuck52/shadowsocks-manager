@@ -419,6 +419,7 @@ exports.status = async (req, res) => {
     const skin = config.plugins.webgui.skin || 'default';
     const google_signin = config.plugins.webgui.google_signin || '';
     const facebook_login = config.plugins.webgui.facebook_login || '';
+    let smt;
     let alipay;
     let paypal;
     let paypalMode;
@@ -431,6 +432,7 @@ exports.status = async (req, res) => {
     let simple;
     if(status) {
       email = (await knex('user').select(['email']).where({ id }).then(s => s[0])).email;
+      smt = config.plugins.smt && config.plugins.smt.use;
       alipay = config.plugins.alipay && config.plugins.alipay.use;
       paypal = config.plugins.paypal && config.plugins.paypal.use;
       paypalMode = config.plugins.paypal && config.plugins.paypal.mode;
@@ -470,6 +472,7 @@ exports.status = async (req, res) => {
       browserColor,
       site,
       skin,
+      smt,
       alipay,
       paypal,
       paypalMode,

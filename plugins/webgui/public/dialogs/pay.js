@@ -20,8 +20,9 @@ app.factory('payDialog' , [ '$mdDialog', '$interval', '$timeout', '$http', '$loc
     }],
     payType: [],
   };
+  if(publicInfo.config.smt) { publicInfo.payType.push({ type: 'smt', name: 'SMT' }); }
   if(publicInfo.config.alipay) { publicInfo.payType.push({ type: 'alipay', name: '支付宝' }); }
-  if(publicInfo.config.paypal) { publicInfo.payType.push({ type: 'paypal', name: 'Paypal' }); }
+  // if(publicInfo.config.paypal) { publicInfo.payType.push({ type: 'paypal', name: 'Paypal' }); }
   if(publicInfo.config.giftcard) { publicInfo.payType.push({ type: 'giftcard', name: '充值码' }); }
   publicInfo.myPayType = publicInfo.payType[0] ? publicInfo.payType[0].type : undefined;
   let dialogPromise = null;
@@ -90,6 +91,11 @@ app.factory('payDialog' , [ '$mdDialog', '$interval', '$timeout', '$http', '$loc
         }
       }, '#paypal-button-container');
     }
+    if(publicInfo.myPayType === `smt`) {
+      // TODO 新增写死的二维码接口,调用并返回二维码
+      publicInfo.qrCode = "0x1a9ec3b0b807464e6d3398a59d6b0a369bf422fa";
+      publicInfo.status = 'pay';
+    }
   };
   let interval = null;
   const close = () => {
@@ -133,9 +139,9 @@ app.factory('payDialog' , [ '$mdDialog', '$interval', '$timeout', '$http', '$loc
       publicInfo.orderId = account.orderId;
     }
     dialogPromise = $mdDialog.show(dialog);
-    if(publicInfo.payType.length === 1) {
-      publicInfo.jumpToPayPage();
-    }
+    // if(publicInfo.payType.length === 1) {
+    //   publicInfo.jumpToPayPage();
+    // }
     return dialogPromise;
   };
   const chooseOrderType = () => {

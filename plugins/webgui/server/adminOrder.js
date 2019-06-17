@@ -28,7 +28,6 @@ exports.getOneOrder = async (req, res) => {
     const order = await orderPlugin.getOneOrder(orderId);
     res.send(order);
   } catch(err) {
-    console.log(err);
     res.status(403).end();
   }
 };
@@ -44,6 +43,7 @@ exports.newOrder = async (req, res) => {
     data.cycle = req.body.cycle;
     data.alipay = req.body.alipay;
     data.paypal = req.body.paypal;
+    data.smt = req.body.smt;
     data.flow = req.body.flow;
     data.refTime = req.body.refTime;
     data.server = req.body.server;
@@ -74,6 +74,7 @@ exports.editOrder = async (req, res) => {
     data.cycle = req.body.cycle;
     data.alipay = req.body.alipay;
     data.paypal = req.body.paypal;
+    data.smt = req.body.smt;
     data.flow = req.body.flow;
     data.refTime = req.body.refTime;
     data.server = req.body.server;
