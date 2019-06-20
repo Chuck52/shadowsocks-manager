@@ -8,7 +8,8 @@ const cron = appRequire('init/cron');
 const knex = appRequire('init/knex').knex;
 const manager = appRequire('services/manager');
 const minute = 1;
-const time = minute * 60 * 1000;
+// const time = minute * 60 * 1000;
+const time = 0;// 降低查询间隔
 
 let accountInfo = {};
 
@@ -76,6 +77,10 @@ const saveFlow = async () => {
   }
 };
 
-cron.minute(() => {
+// cron.minute(() => {
+//   saveFlow();
+// }, 'SaveFlow', 1);
+// 改为5秒一次.否则反应太慢
+cron.second(() => {
   saveFlow();
-}, 'SaveFlow', 1);
+}, 'SaveFlow', 5);

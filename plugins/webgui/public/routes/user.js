@@ -57,6 +57,11 @@ app.config(['$stateProvider', $stateProvider => {
       controller: 'UserMacAddressController',
       templateUrl: `${ cdn }/public/views/user/macAddress.html`,
     })
+    .state('user.smtPayAccount', {
+        url: '/smtPayAccount',
+        controller: 'UserSMTPayAccountController',
+        templateUrl: `${ cdn }/public/views/user/smtPayAccount.html`,
+      })
     ;
   }])
 ;

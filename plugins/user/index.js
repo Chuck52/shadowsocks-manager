@@ -263,6 +263,14 @@ const changePassword = async (userId, oldPassword, newPassword) => {
   });
 };
 
+const changeSMTPayAccount = async (userId, newSMTPayAccount) => {
+  await editUser({
+    id:userId,
+  }, {
+    smt_account: newSMTPayAccount
+  });
+};
+
 exports.add = addUser;
 exports.edit = editUser;
 exports.checkPassword = checkPassword;
@@ -274,3 +282,4 @@ exports.getOneAdmin = getOneAdmin;
 exports.getUserAndPaging = getUserAndPaging;
 exports.delete = deleteUser;
 exports.changePassword = changePassword;
+exports.changeSMTPayAccount = changeSMTPayAccount;

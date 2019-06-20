@@ -148,18 +148,22 @@ const isOverFlow = async (server, account) => {
     }).whereNotIn('serverId', [ serverId ]);
   };
   if(account.type >= 2 && account.type <= 5) {
+    // 获取时间单位
     let timePeriod = 0;
     if(account.type === 2) { timePeriod = 7 * 86400 * 1000; }
     if(account.type === 3) { timePeriod = 30 * 86400 * 1000; }
     if(account.type === 4) { timePeriod = 1 * 86400 * 1000; }
     if(account.type === 5) { timePeriod = 3600 * 1000; }
+    // 获取起始时间,从开始时间按时间单位往当前靠,取最近的点为起始时间
     const data = JSON.parse(account.data);
     let startTime = data.create;
     while(startTime + timePeriod <= Date.now()) {
       startTime += timePeriod;
     }
+    // 当前时间为截止时间
     const endTime = Date.now();
 
+    // 是否合并多服务器流量统计
     const isMultiServerFlow = !!account.multiServerFlow;
 
     let servers = [];
@@ -168,7 +172,7 @@ const isOverFlow = async (server, account) => {
     } else {
       servers = await knex('server').where({ id: server.id });
     }
-
+    // 查询实际流量
     const flows = await flow.getFlowFromSplitTimeWithScale(servers.map(m => m.id), account.id, startTime, endTime);
 
     const serverObj = {};
@@ -192,11 +196,13 @@ const isOverFlow = async (server, account) => {
       if(+s === server.id) { realFlow = flow; }
       sumFlow += Math.ceil(flow * serverObj[s].scale);
     }
-
+    // 查询可用流量
     const flowPacks = await knex('webgui_flow_pack').where({ accountId: account.id }).whereBetween('createTime', [startTime, endTime]);
     const flowWithFlowPacks = flowPacks.reduce((a, b) => {
       return { flow: a.flow + b.flow };
     }, { flow: data.flow }).flow;
+
+    // 更新实际使用的流量
     await writeFlow(server.id, account.id, realFlow);
     if(account.multiServerFlow && sumFlow < flowWithFlowPacks) {
       await writeFlowForOtherServer(server.id, account.id);
@@ -204,6 +210,7 @@ const isOverFlow = async (server, account) => {
     if(account.multiServerFlow && sumFlow >= flowWithFlowPacks) {
       await checkFlowForOtherServer(server.id, account.id);
     }
+    // 返回
     return sumFlow >= flowWithFlowPacks;
   } else {
     await writeFlow(server.id, account.id, 0);
@@ -506,9 +513,11 @@ cron.minute(async () => {
       let accounts = [];
       const redis = appRequire('init/redis').redis;
       const keys = await redis.keys('CheckAccount:*');
-      const ids = keys.length === 0 ? [] : (await redis.mget(keys)).map(m => JSON.parse(m)).reduce((a, b) => {
-        return b ? [...a, ...b] : a;
-      }, []);
+      // const ids = keys.length === 0 ? [] : (await redis.mget(keys)).map(m => JSON.parse(m)).reduce((a, b) => {
+      //   return b ? [...a, ...b] : a;
+      // }, []);
+      // 取消原本对每个账户设置的校验间隔,否则太不灵敏了
+      const ids = [];
       try {
         const datas = await knex('account_flow').select()
         .where('nextCheckTime', '<', Date.now())
@@ -543,7 +552,7 @@ cron.minute(async () => {
         .orderByRaw('random()').limit(accounts.length < 30 ? 35 - accounts.length : 5);
         accounts = [...accounts, ...datas];
       } catch(err) { }
-
+      // console.log(new Date().toLocaleTimeString(), "start check accounts", accounts.length, ids);
       try {
         if(accounts.length <= 120) {
           for(const account of accounts) {
@@ -563,11 +572,11 @@ cron.minute(async () => {
           await redis.set(`CheckAccount:${ process.uptime() }:${ cluster.worker.id }`, JSON.stringify(accounts.map(account => account.id)), 'EX', 45);
           logger.info(`check ${ accounts.length } accounts, ${ Date.now() - start } ms`);
           if(accounts.length < 30) {
-            await sleep((30 - accounts.length) * 1000);
+            await sleep((5 - accounts.length) * 1000);
           }
         } else {
           logger.info('no need to check');
-          await sleep(30 * 1000);
+          await sleep(5 * 1000);
         }
       } catch (err) {
         const end = Date.now();

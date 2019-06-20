@@ -400,6 +400,20 @@ exports.changePassword = (req, res) => {
   });
 };
 
+exports.changeSMTPayAccount = (req, res) => {
+  const newSMTPayAccount = req.body.newSMTPayAccount;
+  if (!newSMTPayAccount) {
+    return res.status(403).end();
+  }
+  const userId = req.session.user;
+  user.changeSMTPayAccount(userId, newSMTPayAccount).then(success => {
+    res.send(newSMTPayAccount);
+  }).catch(err => {
+    console.log(err);
+    res.status(403).end();
+  });
+};
+
 exports.getTelegramCode = (req, res) => {
   const telegramUser = appRequire('plugins/webgui_telegram/user');
   const userId = req.session.user;

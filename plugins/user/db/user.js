@@ -31,6 +31,9 @@ const createTable = async() => {
     table.bigInteger('resetPasswordTime');
     table.integer('group').defaultTo(0);
     table.string('comment').defaultTo('');
+    table.string('smt_account').unique();
+
+    table.index('smt_account');
   });
 };
 

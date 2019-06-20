@@ -119,6 +119,9 @@ const send = async (data, options) => {
   if(!options) {
     options = { host, port, password };
   }
+  if (data.command != 'list' && data.command != 'flow') {
+    console.log("call ss server ", host,port,data, options);
+  }
   const ips = await getIps(options.host);
   if(ips.length === 0) {
     return Promise.reject('invalid ip');

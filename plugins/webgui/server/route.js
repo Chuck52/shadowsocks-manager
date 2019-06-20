@@ -222,6 +222,7 @@ app.post('/api/user/alipay/callback', user.alipayCallback);
 app.post('/api/user/paypal/callback', user.paypalCallback);
 
 app.post('/api/user/changePassword', isUser, user.changePassword);
+app.post('/api/user/change_smt_pay_account',isUser, user.changeSMTPayAccount)
 
 app.get('/api/user/ref/code', isUser, user.getRefCode);
 app.get('/api/user/ref/user', isUser, user.getRefUser);

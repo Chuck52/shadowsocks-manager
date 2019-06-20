@@ -92,8 +92,8 @@ app.factory('payDialog' , [ '$mdDialog', '$interval', '$timeout', '$http', '$loc
       }, '#paypal-button-container');
     }
     if(publicInfo.myPayType === `smt`) {
-      // TODO 新增写死的二维码接口,调用并返回二维码
-      publicInfo.qrCode = "0x1a9ec3b0b807464e6d3398a59d6b0a369bf422fa";
+      // 返回二维码
+      publicInfo.qrCode = publicInfo.config.smtReceiveAccount;
       publicInfo.status = 'pay';
     }
   };
@@ -186,9 +186,14 @@ app.factory('payDialog' , [ '$mdDialog', '$interval', '$timeout', '$http', '$loc
     });
   };
   const jumpToPayPage = () => {
+    console.log(publicInfo);
     if(publicInfo.myPayType === 'giftcard') {
       giftCard();
-    } else {
+    } else if (publicInfo.myPayType === 'smt' && (!publicInfo.config.smtPayAccount || publicInfo.config.smtPayAccount === '')) {
+      publicInfo.status = 'error';
+      publicInfo.message = '请先设置SMT付款账号再进行SMT支付';
+    }
+    else {
       chooseOrderType();
     }
   };

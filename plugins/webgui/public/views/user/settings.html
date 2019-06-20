@@ -52,6 +52,17 @@
                     </div>
                 </md-list-item>
             </md-list>
+            <md-divider ng-if="config.smt"></md-divider>
+            <md-list>
+                <md-list-item ng-click="toSMTPayAccount()">
+                    <div class="md-list-item-text" style="width: 100%;" layout="row" layout-align="space-between center">
+                        <div flex="75" translate>SMT付款地址</div>
+                        <div flex layout="row" layout-align="end center">
+                            <md-button class="md-primary" ng-click="toSMTPayAccount()">点击进入&gt;&gt;</md-button>
+                        </div>
+                    </div>
+                </md-list-item>
+            </md-list>
             <md-divider></md-divider>
         </md-card-content>
     </md-card>

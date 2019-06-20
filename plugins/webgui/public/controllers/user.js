@@ -388,6 +388,9 @@ app
     $scope.toMac = () => {
       $state.go('user.macAddress');
     };
+    $scope.toSMTPayAccount = () => {
+      $state.go('user.smtPayAccount');
+    };
   }
 ])
 .controller('UserChangePasswordController', ['$scope', '$state', 'userApi', 'alertDialog', '$http', '$localStorage',
@@ -488,4 +491,29 @@ app
     getMacAccount();
   }
 ])
+.controller('UserSMTPayAccountController', ['$scope', '$state', 'userApi', 'configManager','alertDialog',
+      ($scope, $state, userApi,configManager, alertDialog) => {
+        const config = configManager.getConfig();
+        $scope.setTitle('SMT付款账户');
+        $scope.setMenuButton('arrow_back', 'user.settings');
+        $scope.data = {
+          smtPayAccount: config.smtPayAccount,
+          newSMTPayAccount: ''
+        };
+        $scope.confirm = () => {
+          alertDialog.loading();
+          userApi.changeSMTPayAccount($scope.data.newSMTPayAccount).then((success) => {
+            alertDialog.show('修改SMT付款账户成功', '确定')
+            .then( () => {
+              config.smtPayAccount = success.data;
+              configManager.setConfig(config);
+              $state.go('user.settings');
+            }) ;
+          }).catch(err => {
+            console.error(err);
+            alertDialog.show('修改SMT付款账户失败', '确定');
+          });
+        };
+      }
+    ])
 ;

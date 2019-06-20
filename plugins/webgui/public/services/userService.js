@@ -87,6 +87,12 @@ app.factory('userApi', ['$q', '$http', ($q, $http) => {
     return $http.get('/api/user/notice').then(success => success.data);
   };
 
+  const changeSMTPayAccount = (newSMTPayAccount) => {
+    return $http.post('/api/user/change_smt_pay_account',{
+      newSMTPayAccount
+    });
+  };
+
   return {
     getServerPortData,
     getUserAccount,
@@ -94,5 +100,6 @@ app.factory('userApi', ['$q', '$http', ($q, $http) => {
     changePassword,
     updateAccount,
     getNotice,
+    changeSMTPayAccount,
   };
 }]);

@@ -49,7 +49,7 @@ const connect = () => {
   client.on('message', async msg => {
     const msgStr = new String(msg);
     if(msgStr.substr(0, 4) === 'pong') {
-      shadowsocksType = 'python';
+      // shadowsocksType = 'python';
     } else if(msgStr.substr(0, 2) === '[{') {
       isNewPython = true;
       portsForLibev = JSON.parse(msgStr);

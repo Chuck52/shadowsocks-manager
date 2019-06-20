@@ -420,6 +420,8 @@ exports.status = async (req, res) => {
     const google_signin = config.plugins.webgui.google_signin || '';
     const facebook_login = config.plugins.webgui.facebook_login || '';
     let smt;
+    let smtReceiveAccount;
+    let smtConfirmBlock;
     let alipay;
     let paypal;
     let paypalMode;
@@ -427,12 +429,19 @@ exports.status = async (req, res) => {
     let giftcard;
     let refCode;
     let email;
+    let smtPayAccount;
     let subscribe;
     let multiAccount;
     let simple;
     if(status) {
-      email = (await knex('user').select(['email']).where({ id }).then(s => s[0])).email;
+      const u = await knex('user').select(['email','smt_account']).where({ id }).then(s => s[0]);
+      email = u.email;
+      smtPayAccount = u.smt_account;
       smt = config.plugins.smt && config.plugins.smt.use;
+      if (smt) {
+        smtReceiveAccount = config.plugins.smt.receive_account;
+        smtConfirmBlock = config.plugins.smt.confirm_block;
+      }
       alipay = config.plugins.alipay && config.plugins.alipay.use;
       paypal = config.plugins.paypal && config.plugins.paypal.use;
       paypalMode = config.plugins.paypal && config.plugins.paypal.mode;
@@ -466,6 +475,7 @@ exports.status = async (req, res) => {
       status,
       id,
       email,
+      smtPayAccount,
       version,
       themePrimary,
       themeAccent,
@@ -473,6 +483,8 @@ exports.status = async (req, res) => {
       site,
       skin,
       smt,
+      smtReceiveAccount,
+      smtConfirmBlock,
       alipay,
       paypal,
       paypalMode,
