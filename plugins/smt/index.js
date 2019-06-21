@@ -25,7 +25,8 @@ async function handleReceiveTransaction(txr) {
     // 0. 获取tx
     const tx = await w.eth.getTransaction(txr.transactionHash);
     // 1. 根据交易金额查询我们的smt套餐,todo 如果不存在,忽略
-    const orderInfo = await knex('webgui_order').where({ smt: tx.value }).then(s => s[0]);
+    const amount = w.utils.fromWei(tx.value);
+    const orderInfo = await knex('webgui_order').where({ smt: amount }).then(s => s[0]);
     if(!orderInfo) {
         logger.warn("ignore received smt because can not find account order with amount %d ", tx.value);
         return;
