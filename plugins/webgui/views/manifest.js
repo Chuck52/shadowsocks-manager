@@ -3,7 +3,7 @@ if(gcmSenderId) { gcmSenderId = gcmSenderId.toString(); }
 
 const manifest = {
   short_name: 'ssmgr',
-  name: 'Shadowsocks-Manager',
+  name: '四通八达网络',
   icons: [
     {
       src: '/favicon.png',

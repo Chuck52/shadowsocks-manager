@@ -35,7 +35,7 @@ setDefaultValue('account', {
   }
 });
 setDefaultValue('base', {
-  title: 'Shadowsocks-Manager',
+  title: '四通八达网络',
   shortTitle: 'ssmgr',
   themeAccent: 'pink',
   themePrimary: 'blue',
