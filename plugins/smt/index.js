@@ -3,6 +3,7 @@ const logger = log4js.getLogger('smt');
 const Web3 = require('web3');
 const knex = appRequire('init/knex').knex;
 const account = appRequire('plugins/account/index');
+const sleep = time => new Promise(resolve => setTimeout(resolve, time));
 
 // 加载配置
 const config = appRequire('services/config').all();
@@ -85,11 +86,14 @@ const dealPendingTx =  async (txHash) => {
 /*
     start
  */
-logger.info("start smt plugin with rpc_endpoint=%s receive_account=%s",endpoint, receiveAccount);
-// 订阅
 w.eth.subscribe('pendingTransactions', function(error, result){
     if (error) {
         logger.error("subscribe pendingTransactions error : " + error);
     }
-}).on("data", dealPendingTx);
+})
+.on("data", dealPendingTx)
+.on('error', async (error) => {
+    logger.error("subscribe pendingTransactions error : " + error);
+});
+logger.info("start smt plugin with rpc_endpoint=%s receive_account=%s",endpoint, receiveAccount);
 
