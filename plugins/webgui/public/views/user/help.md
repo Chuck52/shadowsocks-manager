@@ -1,6 +1,7 @@
 # 使用帮助
 ## 1. 支付相关
 在进行SMT支付之前,必须在设置页面设置付款SMT地址,并在实际支付时使用该地址支付
+
 请严格按照订单价格进行数字货币的支付,否则将导致支付成功但充值失败的情况发生.如果发生该种情况,请联系管理员bsteven879@gmail.com.
 ## 2. 客户端下载及使用
  - Windows  [客户端下载](https://coding.net/u/haohaohao/p/ssdown/git/raw/master/ShadowsocksR.zip) [使用教程](http://cp.xqs.ch/dl.php?type=d&id=1)
