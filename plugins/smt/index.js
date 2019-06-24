@@ -33,7 +33,8 @@ async function handleReceiveTransaction(txr) {
         return;
     }
     // 2. 查询交易发送方地址是否在我们的用户列表中注册,todo 如果不存在,忽略
-    const user = await knex('user').where({smt_account:txr.from}).then(s => s[0]);
+    let addr = txr.from.toLowerCase();
+    const user = await knex('user').where({smt_account:addr}).then(s => s[0]);
     if(!user) {
         logger.warn("ignore received smt because can not find user by payer %s ", txr.from);
         return;

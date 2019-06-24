@@ -267,7 +267,7 @@ const changeSMTPayAccount = async (userId, newSMTPayAccount) => {
   await editUser({
     id:userId,
   }, {
-    smt_account: newSMTPayAccount
+    smt_account: newSMTPayAccount.toLowerCase()
   });
 };
 
