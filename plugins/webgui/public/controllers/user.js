@@ -52,6 +52,12 @@ app
       name: '设置',
       icon: 'settings',
       click: 'user.settings'
+    },{
+      name: '使用说明',
+      icon: 'help',
+      click:function () {
+        window.open(`${ cdn }/public/views/user/help.html`);
+      }
     }, {
       name: 'divider',
     }, {

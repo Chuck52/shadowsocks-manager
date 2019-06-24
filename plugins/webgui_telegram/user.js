@@ -202,7 +202,7 @@ telegram.on('message', async message => {
         password: Math.random().toString().substr(2,10),
         time: Date.now(),
         limit: newUserAccount.limit || 8,
-        flow: (newUserAccount.flow ? newUserAccount.flow : 350) * 1000000,
+        flow: (newUserAccount.flow ? newUserAccount.flow : 100) * 1000000,
         server: newUserAccount.server ? JSON.stringify(newUserAccount.server): null,
         autoRemove: newUserAccount.autoRemove ? 1 : 0,
         multiServerFlow: newUserAccount.multiServerFlow ? 1 : 0,

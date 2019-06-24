@@ -58,7 +58,7 @@ const sendMessage = (data, options) => {
     }, () => {
       client.write(pack(data, (options? options.password: null) || password));
     });
-    client.setTimeout(10 * 1000);
+    client.setTimeout(60 * 1000);
     const receive = {
       data: Buffer.from(''),
       socket: client,
@@ -119,7 +119,7 @@ const send = async (data, options) => {
   if(!options) {
     options = { host, port, password };
   }
-  if (data.command != 'list' && data.command != 'flow') {
+  if (data.command !== 'list' && data.command !== 'flow') {
     console.log("call ss server ", host,port,data, options);
   }
   const ips = await getIps(options.host);

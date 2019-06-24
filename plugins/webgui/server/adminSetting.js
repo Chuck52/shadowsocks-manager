@@ -20,7 +20,7 @@ const setDefaultValue = (key, value) => {
 setDefaultValue('account', {
   accountForNewUser: {
     isEnable: true,
-    flow: 350,
+    flow: 100,
     type: 5,
     limit: 8,
   },

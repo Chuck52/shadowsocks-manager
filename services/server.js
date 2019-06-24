@@ -96,7 +96,7 @@ const checkData = receive => {
       // receive.socket.close();
     }).catch(err => {
       logger.error(err);
-      console.trace();
+      console.trace(err);
       let code = -1;
       if(err === 'invalid command') { code = 1; }
       receive.socket.end(pack({ code }));
