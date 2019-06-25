@@ -26,6 +26,7 @@
                 <div ng-if="publicInfo.config.smt && publicInfo.myPayType === 'smt'" layout="column" layout-align="center center">
                     <qr size="getQrCodeSize()" layout-margin text="qrCode()" image="true" "></qr>
                     <div translate>请使用SMT钱包扫描二维码支付</div>
+                    <div translate>支付成功后,请耐心等待1-2分钟,购买的流量将在服务器确认交易打包后到账</div>
                 </div>
             </div>
             <div layout="column" layout-align="center center" ng-if="publicInfo.status === 'choose'">

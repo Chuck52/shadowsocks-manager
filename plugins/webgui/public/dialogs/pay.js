@@ -93,7 +93,7 @@ app.factory('payDialog' , [ '$mdDialog', '$interval', '$timeout', '$http', '$loc
     }
     if(publicInfo.myPayType === `smt`) {
       // 返回二维码
-      publicInfo.qrCode = publicInfo.config.smtReceiveAccount;
+      publicInfo.qrCode = `${publicInfo.config.smtReceiveAccount}?amount=${publicInfo.selectedOrder.smt}&token=SMT`;
       publicInfo.status = 'pay';
     }
   };
