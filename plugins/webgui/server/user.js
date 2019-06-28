@@ -414,6 +414,21 @@ exports.changeSMTPayAccount = (req, res) => {
   });
 };
 
+exports.changeETHPayAccount = (req, res) => {
+  const newETHPayAccount = req.body.newETHPayAccount;
+  if (!newETHPayAccount) {
+    return res.status(403).end();
+  }
+  const userId = req.session.user;
+  user.changeETHPayAccount(userId, newETHPayAccount).then(success => {
+    res.send(newETHPayAccount);
+  }).catch(err => {
+    console.log(err);
+    res.status(403).end();
+  });
+};
+
+
 exports.getTelegramCode = (req, res) => {
   const telegramUser = appRequire('plugins/webgui_telegram/user');
   const userId = req.session.user;

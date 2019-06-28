@@ -21,6 +21,7 @@ app.factory('payDialog' , [ '$mdDialog', '$interval', '$timeout', '$http', '$loc
     payType: [],
   };
   if(publicInfo.config.smt) { publicInfo.payType.push({ type: 'smt', name: 'SMT' }); }
+  if(publicInfo.config.eth) { publicInfo.payType.push({ type: 'eth', name: 'ETH' }); }
   if(publicInfo.config.alipay) { publicInfo.payType.push({ type: 'alipay', name: '支付宝' }); }
   // if(publicInfo.config.paypal) { publicInfo.payType.push({ type: 'paypal', name: 'Paypal' }); }
   if(publicInfo.config.giftcard) { publicInfo.payType.push({ type: 'giftcard', name: '充值码' }); }
@@ -94,6 +95,11 @@ app.factory('payDialog' , [ '$mdDialog', '$interval', '$timeout', '$http', '$loc
     if(publicInfo.myPayType === `smt`) {
       // 返回二维码
       publicInfo.qrCode = `${publicInfo.config.smtReceiveAccount}?amount=${publicInfo.selectedOrder.smt}&token=SMT`;
+      publicInfo.status = 'pay';
+    }
+    if(publicInfo.myPayType === `eth`) {
+      // 返回二维码
+      publicInfo.qrCode = `${publicInfo.config.ethReceiveAccount}?amount=${publicInfo.selectedOrder.eth}&token=ETH`;
       publicInfo.status = 'pay';
     }
   };
@@ -186,12 +192,14 @@ app.factory('payDialog' , [ '$mdDialog', '$interval', '$timeout', '$http', '$loc
     });
   };
   const jumpToPayPage = () => {
-    console.log(publicInfo);
     if(publicInfo.myPayType === 'giftcard') {
       giftCard();
     } else if (publicInfo.myPayType === 'smt' && (!publicInfo.config.smtPayAccount || publicInfo.config.smtPayAccount === '')) {
       publicInfo.status = 'error';
       publicInfo.message = '请先设置SMT付款账号再进行SMT支付';
+    } else if (publicInfo.myPayType === 'eth' && (!publicInfo.config.ethPayAccount || publicInfo.config.ethPayAccount === '')) {
+      publicInfo.status = 'error';
+      publicInfo.message = '请先设置ETH付款账号再进行ETH支付';
     }
     else {
       chooseOrderType();

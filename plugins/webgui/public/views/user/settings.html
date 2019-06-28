@@ -63,6 +63,17 @@
                     </div>
                 </md-list-item>
             </md-list>
+            <md-divider ng-if="config.eth"></md-divider>
+            <md-list>
+                <md-list-item ng-click="toETHPayAccount()">
+                    <div class="md-list-item-text" style="width: 100%;" layout="row" layout-align="space-between center">
+                        <div flex="75" translate>ETH付款地址</div>
+                        <div flex layout="row" layout-align="end center">
+                            <md-button class="md-primary" ng-click="toETHPayAccount()">点击进入&gt;&gt;</md-button>
+                        </div>
+                    </div>
+                </md-list-item>
+            </md-list>
             <md-divider></md-divider>
         </md-card-content>
     </md-card>

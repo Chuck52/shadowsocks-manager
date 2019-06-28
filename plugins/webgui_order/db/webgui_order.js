@@ -77,6 +77,12 @@ const createTable = async () => {
         table.integer('active').defaultTo(1);
       });
     }
+    const hasEth = await knex.schema.hasColumn(tableName, 'eth');
+    if(!hasEth) {
+      await knex.schema.table(tableName, function(table) {
+        table.float('eth').defaultTo(0).unique();
+      });
+    }
     await addDefaultOrder();
     await fixRefTime();
     return;

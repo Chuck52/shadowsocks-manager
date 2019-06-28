@@ -44,6 +44,7 @@ exports.newOrder = async (req, res) => {
     data.alipay = req.body.alipay;
     data.paypal = req.body.paypal;
     data.smt = req.body.smt;
+    data.eth = req.body.eth;
     data.flow = req.body.flow;
     data.refTime = req.body.refTime;
     data.server = req.body.server;
@@ -75,6 +76,7 @@ exports.editOrder = async (req, res) => {
     data.alipay = req.body.alipay;
     data.paypal = req.body.paypal;
     data.smt = req.body.smt;
+    data.eth = req.body.eth;
     data.flow = req.body.flow;
     data.refTime = req.body.refTime;
     data.server = req.body.server;

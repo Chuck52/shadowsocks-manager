@@ -271,6 +271,14 @@ const changeSMTPayAccount = async (userId, newSMTPayAccount) => {
   });
 };
 
+const changeETHPayAccount = async (userId, newETHPayAccount) => {
+  await editUser({
+    id:userId,
+  }, {
+    eth_account: newETHPayAccount.toLowerCase()
+  });
+};
+
 exports.add = addUser;
 exports.edit = editUser;
 exports.checkPassword = checkPassword;
@@ -283,3 +291,4 @@ exports.getUserAndPaging = getUserAndPaging;
 exports.delete = deleteUser;
 exports.changePassword = changePassword;
 exports.changeSMTPayAccount = changeSMTPayAccount;
+exports.changeETHPayAccount = changeETHPayAccount;

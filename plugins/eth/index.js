@@ -1,5 +1,5 @@
 const log4js = require('log4js');
-const logger = log4js.getLogger('smt');
+const logger = log4js.getLogger('eth');
 const Web3 = require('web3');
 const knex = appRequire('init/knex').knex;
 const account = appRequire('plugins/account/index');
@@ -7,9 +7,9 @@ const sleep = time => new Promise(resolve => setTimeout(resolve, time));
 
 // 加载配置
 const config = appRequire('services/config').all();
-const receiveAccount = config.plugins.smt.receive_account;
-const endpoint= config.plugins.smt.rpc_endpoint;
-const confirmBlock = config.plugins.smt.confirm_block;
+const receiveAccount = config.plugins.eth.receive_account;
+const endpoint= config.plugins.eth.rpc_endpoint;
+const confirmBlock = config.plugins.eth.confirm_block;
 
 // 建立连接
 let w = new Web3(new Web3.providers.WebsocketProvider(endpoint));
@@ -27,16 +27,16 @@ async function handleReceiveTransaction(txr) {
     const tx = await w.eth.getTransaction(txr.transactionHash);
     // 1. 根据交易金额查询我们的smt套餐,todo 如果不存在,忽略
     const amount = w.utils.fromWei(tx.value);
-    const orderInfo = await knex('webgui_order').where({ smt: amount }).then(s => s[0]);
+    const orderInfo = await knex('webgui_order').where({ eth: amount }).then(s => s[0]);
     if(!orderInfo) {
-        logger.warn("ignore received smt because can not find order with amount %d ", tx.value);
+        logger.warn("ignore received eth because can not find order with amount %d ", tx.value);
         return;
     }
     // 2. 查询交易发送方地址是否在我们的用户列表中注册,todo 如果不存在,忽略
     let addr = txr.from.toLowerCase();
-    const user = await knex('user').where({smt_account:addr}).then(s => s[0]);
+    const user = await knex('user').where({eth_account:addr}).then(s => s[0]);
     if(!user) {
-        logger.warn("ignore received smt because can not find user by payer %s ", txr.from);
+        logger.warn("ignore received eth because can not find user by payer %s ", txr.from);
         return;
     }
     // 3. 根据用户查询账户,todo 目前仅支持一个用户一个账户
@@ -96,5 +96,5 @@ w.eth.subscribe('pendingTransactions', function(error, result){
 .on('error', async (error) => {
     logger.error("subscribe pendingTransactions error : " + error);
 });
-logger.info("start smt plugin with rpc_endpoint=%s receive_account=%s",endpoint, receiveAccount);
+logger.info("start eth plugin with rpc_endpoint=%s receive_account=%s",endpoint, receiveAccount);
 

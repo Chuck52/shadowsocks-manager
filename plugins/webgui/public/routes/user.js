@@ -62,6 +62,11 @@ app.config(['$stateProvider', $stateProvider => {
         controller: 'UserSMTPayAccountController',
         templateUrl: `${ cdn }/public/views/user/smtPayAccount.html`,
       })
+    .state('user.ethPayAccount', {
+        url: '/ethPayAccount',
+        controller: 'UserETHPayAccountController',
+        templateUrl: `${ cdn }/public/views/user/ethPayAccount.html`,
+      })
     ;
   }])
 ;

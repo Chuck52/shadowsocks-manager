@@ -1,0 +1,31 @@
+<div layout="column">
+    <div flex="15"></div>
+    <div flex layout="row">
+        <div flex="10" flex-gt-sm="30"></div>
+        <div flex layout="column" layout-align="space-around stretch">
+            <div style="height: 30px;"></div>
+            <!-- 修改ETH付款地址 -->
+            <form name="ethPayAccountForm">
+                <md-input-container class="md-block" ng-show="data.ethPayAccount && data.ethPayAccount != ''">
+                    <label translate>当前ETH付款地址</label>
+                    <input type="text" required name="ethPayAccount" ng-model="data.ethPayAccount">
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label translate>新ETH付款地址</label>
+                    <input type="text" required name="newETHPayAccount" ng-model="data.newETHPayAccount">
+                    <div ng-messages="ethPayAccountForm.newETHPayAccount.$error">
+                        <div ng-message="required" translate>地址不能为空</div>
+                    </div>
+                </md-input-container>
+            </form>
+        </div>
+        <div flex="10" flex-gt-sm="30"></div>
+    </div>
+    <div flex layout="row" layout-align="center start">
+        <div flex="10" flex-gt-sm="30"></div>
+        <div layout="row" flex layout-align="space-around center">
+            <md-button class="md-raised md-primary" ng-disabled="!data.newETHPayAccount" ng-click="confirm()" translate>确认</md-button>
+        </div>
+        <div flex="10" flex-gt-sm="30"></div>
+    </div>
+</div>

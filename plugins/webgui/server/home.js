@@ -422,6 +422,9 @@ exports.status = async (req, res) => {
     let smt;
     let smtReceiveAccount;
     let smtConfirmBlock;
+    let eth;
+    let ethReceiveAccount;
+    let ethConfirmBlock;
     let alipay;
     let paypal;
     let paypalMode;
@@ -430,17 +433,24 @@ exports.status = async (req, res) => {
     let refCode;
     let email;
     let smtPayAccount;
+    let ethPayAccount;
     let subscribe;
     let multiAccount;
     let simple;
     if(status) {
-      const u = await knex('user').select(['email','smt_account']).where({ id }).then(s => s[0]);
+      const u = await knex('user').select(['email','smt_account','eth_account']).where({ id }).then(s => s[0]);
       email = u.email;
       smtPayAccount = u.smt_account;
       smt = config.plugins.smt && config.plugins.smt.use;
       if (smt) {
         smtReceiveAccount = config.plugins.smt.receive_account;
         smtConfirmBlock = config.plugins.smt.confirm_block;
+      }
+      ethPayAccount = u.eth_account;
+      eth = config.plugins.eth && config.plugins.eth.use;
+      if (eth) {
+        ethReceiveAccount = config.plugins.eth.receive_account;
+        ethConfirmBlock = config.plugins.eth.confirm_block;
       }
       alipay = config.plugins.alipay && config.plugins.alipay.use;
       paypal = config.plugins.paypal && config.plugins.paypal.use;
@@ -476,6 +486,7 @@ exports.status = async (req, res) => {
       id,
       email,
       smtPayAccount,
+      ethPayAccount,
       version,
       themePrimary,
       themeAccent,
@@ -485,6 +496,9 @@ exports.status = async (req, res) => {
       smt,
       smtReceiveAccount,
       smtConfirmBlock,
+      eth,
+      ethReceiveAccount,
+      ethConfirmBlock,
       alipay,
       paypal,
       paypalMode,

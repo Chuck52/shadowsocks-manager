@@ -16,6 +16,13 @@ const createTable = async() => {
         table.string('comment').defaultTo('');
       });
     }
+    const hasEthAccount = await knex.schema.hasColumn(tableName, 'eth_account');
+    if(!hasEthAccount) {
+      await knex.schema.table(tableName, function(table) {
+        table.string('eth_account').defaultTo('').unique();
+        table.index('eth_account');
+      });
+    }
     return;
   }
   return knex.schema.createTable(tableName, function(table) {

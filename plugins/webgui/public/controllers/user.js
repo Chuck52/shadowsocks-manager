@@ -397,6 +397,9 @@ app
     $scope.toSMTPayAccount = () => {
       $state.go('user.smtPayAccount');
     };
+    $scope.toETHPayAccount = () => {
+      $state.go('user.ethPayAccount');
+    };
   }
 ])
 .controller('UserChangePasswordController', ['$scope', '$state', 'userApi', 'alertDialog', '$http', '$localStorage',
@@ -521,5 +524,30 @@ app
           });
         };
       }
-    ])
+])
+.controller('UserETHPayAccountController', ['$scope', '$state', 'userApi', 'configManager','alertDialog',
+      ($scope, $state, userApi,configManager, alertDialog) => {
+        const config = configManager.getConfig();
+        $scope.setTitle('ETH付款账户');
+        $scope.setMenuButton('arrow_back', 'user.settings');
+        $scope.data = {
+          ethPayAccount: config.ethPayAccount,
+          newETHPayAccount: ''
+        };
+        $scope.confirm = () => {
+          alertDialog.loading();
+          userApi.changeETHPayAccount($scope.data.newETHPayAccount).then((success) => {
+            alertDialog.show('修改ETH付款账户成功', '确定')
+                .then( () => {
+                  config.ethPayAccount = success.data;
+                  configManager.setConfig(config);
+                  $state.go('user.settings');
+                }) ;
+          }).catch(err => {
+            console.error(err);
+            alertDialog.show('修改ETH付款账户失败', '确定');
+          });
+        };
+      }
+])
 ;

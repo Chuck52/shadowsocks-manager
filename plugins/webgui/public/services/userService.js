@@ -93,6 +93,12 @@ app.factory('userApi', ['$q', '$http', ($q, $http) => {
     });
   };
 
+  const changeETHPayAccount = (newETHPayAccount) => {
+    return $http.post('/api/user/change_eth_pay_account',{
+      newETHPayAccount
+    });
+  };
+
   return {
     getServerPortData,
     getUserAccount,
@@ -101,5 +107,6 @@ app.factory('userApi', ['$q', '$http', ($q, $http) => {
     updateAccount,
     getNotice,
     changeSMTPayAccount,
+    changeETHPayAccount,
   };
 }]);
