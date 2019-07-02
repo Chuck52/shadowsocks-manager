@@ -10,6 +10,7 @@ const config = appRequire('services/config').all();
 const receiveAccount = config.plugins.smt.receive_account;
 const endpoint= config.plugins.smt.rpc_endpoint;
 const confirmBlock = config.plugins.smt.confirm_block;
+const queryPeriod = config.plugins.eth.query_period;
 
 // 建立连接
 let w = new Web3(new Web3.providers.WebsocketProvider(endpoint));
@@ -74,6 +75,10 @@ const dealPendingTx =  async (txHash) => {
     try {
         // 1. 获取tx
         const tx = await w.eth.getTransaction(txHash);
+        if (tx === null) {
+            await sleep(queryPeriod);
+            return dealPendingTx(txHash);
+        }
         // 2. 过滤
         if (!isInvalidTx(tx)) return ;
         logger.info("receive tx : [payer=%s amount=%d txHash=%s]",tx.from, tx.value, txHash);

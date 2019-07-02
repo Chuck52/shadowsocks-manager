@@ -10,6 +10,7 @@ const config = appRequire('services/config').all();
 const receiveAccount = config.plugins.eth.receive_account;
 const endpoint= config.plugins.eth.rpc_endpoint;
 const confirmBlock = config.plugins.eth.confirm_block;
+const queryPeriod = config.plugins.eth.query_period;
 
 // 建立连接
 let w = new Web3(new Web3.providers.WebsocketProvider(endpoint));
@@ -24,6 +25,7 @@ const isInvalidTx = (tx) => {
  */
 async function handleReceiveTransaction(txr) {
     // 0. 获取tx
+    console.log(txr);
     const tx = await w.eth.getTransaction(txr.transactionHash);
     // 1. 根据交易金额查询我们的smt套餐,todo 如果不存在,忽略
     const amount = w.utils.fromWei(tx.value);
@@ -74,6 +76,10 @@ const dealPendingTx =  async (txHash) => {
     try {
         // 1. 获取tx
         const tx = await w.eth.getTransaction(txHash);
+        if (tx === null) {
+            await sleep(queryPeriod);
+            return dealPendingTx(txHash);
+        }
         // 2. 过滤
         if (!isInvalidTx(tx)) return ;
         logger.info("receive tx : [payer=%s amount=%d txHash=%s]",tx.from, tx.value, txHash);
