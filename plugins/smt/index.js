@@ -17,6 +17,7 @@ let w = new Web3(new Web3.providers.WebsocketProvider(endpoint));
 
 
 const isInvalidTx = (tx) => {
+  if (tx.to === null) return false;
   return tx.to.toLowerCase() === receiveAccount.toLowerCase();
 };
 

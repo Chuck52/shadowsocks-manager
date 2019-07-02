@@ -327,6 +327,8 @@ app
           cycle: $scope.order.cycle,
           alipay: $scope.order.alipay,
           paypal: $scope.order.paypal,
+          smt :$scope.order.smt,
+          eth :$scope.order.eth,
           flow: $scope.order.flow,
           refTime: $scope.order.refTime,
           autoRemove: $scope.order.autoRemove,
