@@ -17,6 +17,7 @@ let w = new Web3(new Web3.providers.WebsocketProvider(endpoint));
 
 
 const isInvalidTx = (tx) => {
+  if (tx === null) return false;
   if (tx.to === null) return false;
   return tx.to.toLowerCase() === receiveAccount.toLowerCase();
 };
@@ -73,19 +74,23 @@ function confirmEtherTransaction(txHash, confirmations = 0) {
     }, 1000);
 }
 
-const dealPendingTx =  async (txHash) => {
+const dealNewBlockHeaders =  async (block) => {
     try {
-        // 1. 获取tx
-        const tx = await w.eth.getTransaction(txHash);
-        if (tx === null) {
-            await sleep(queryPeriod);
-            return dealPendingTx(txHash);
+        await sleep(3000); // 等待infura同步数据
+        let count = await w.eth.getBlockTransactionCount(block.number);
+        if (count === null) {
+            return await dealNewBlockHeaders(block);
         }
-        // 2. 过滤
-        if (!isInvalidTx(tx)) return ;
-        logger.info("receive tx : [payer=%s amount=%d txHash=%s]",tx.from, tx.value, txHash);
-        // 3. 确认交易,这里打包并等待一块就够了,或者只打包就够了?
-        confirmEtherTransaction(txHash, confirmBlock);
+        for (let i=0; i < count; i++) {
+            let tx = await w.eth.getTransactionFromBlock(block.number, i);
+            if (tx !== null) {
+                console.log(tx.transactionIndex, tx.hash);
+            }
+            if (!isInvalidTx(tx)) continue;
+            logger.info("receive tx : [payer=%s amount=%d txHash=%s]",tx.from, tx.value, tx.hash);
+            // 3. 确认交易,这里打包并等待一块就够了,或者只打包就够了?
+            confirmEtherTransaction(tx.hash, confirmBlock);
+        }
     }catch (e) {
         logger.error("dealPendingTx err : " + e);
     }
@@ -94,14 +99,16 @@ const dealPendingTx =  async (txHash) => {
 /*
     start
  */
-w.eth.subscribe('pendingTransactions', function(error, result){
-    if (error) {
-        logger.error("subscribe pendingTransactions error : " + error);
-    }
-})
-.on("data", dealPendingTx)
-.on('error', async (error) => {
-    logger.error("subscribe pendingTransactions error : " + error);
-});
-logger.info("start eth plugin with rpc_endpoint=%s receive_account=%s",endpoint, receiveAccount);
+if (config.plugins.eth.use) {
+    w.eth.subscribe('newBlockHeaders', function(error, result){
+        if (error) {
+            logger.error("subscribe newBlockHeaders error : " + error);
+        }
+    })
+        .on("data", dealNewBlockHeaders)
+        .on('error', async (error) => {
+            logger.error("subscribe newBlockHeaders error : " + error);
+        });
+    logger.info("start eth plugin with rpc_endpoint=%s receive_account=%s",endpoint, receiveAccount);
+}
 
