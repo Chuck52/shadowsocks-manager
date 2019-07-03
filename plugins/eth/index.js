@@ -83,9 +83,6 @@ const dealNewBlockHeaders =  async (block) => {
         }
         for (let i=0; i < count; i++) {
             let tx = await w.eth.getTransactionFromBlock(block.number, i);
-            if (tx !== null) {
-                console.log(tx.transactionIndex, tx.hash);
-            }
             if (!isInvalidTx(tx)) continue;
             logger.info("receive tx : [payer=%s amount=%d txHash=%s]",tx.from, tx.value, tx.hash);
             // 3. 确认交易,这里打包并等待一块就够了,或者只打包就够了?
