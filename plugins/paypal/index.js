@@ -146,39 +146,44 @@ const sendSuccessMail = async userId => {
   await emailPlugin.sendMail(user.email, orderMail.title, orderMail.content);
 };
 
-cron.minute(async () => {
-  if(!config.plugins.paypal || !config.plugins.paypal.use) { return; }
-  const orders = await knex('paypal').select().whereNotBetween('expireTime', [0, Date.now()]);
-  const scanOrder = order => {
-    if(order.status !== 'approved' && order.status !== 'finish') {
-      return checkOrder(order.paypalId);
-    } else if(order.status === 'approved') {
-      const accountId = order.account;
-      const userId = order.user;
-      push.pushMessage('支付成功', {
-        body: `订单[ ${ order.orderId } ][ ${ order.amount } ]支付成功`,
-      });
-      return checkOrder(order.paypalId).then(() => {
-        return account.setAccountLimit(userId, accountId, order.orderType);
-      }).then(() => {
-        return knex('paypal').update({
-          status: 'finish',
-        }).where({
-          orderId: order.orderId,
+if(config.plugins.paypal && config.plugins.paypal.use) {
+  cron.minute(async () => {
+    if (!config.plugins.paypal || !config.plugins.paypal.use) {
+      return;
+    }
+    const orders = await knex('paypal').select().whereNotBetween('expireTime', [0, Date.now()]);
+    const scanOrder = order => {
+      if (order.status !== 'approved' && order.status !== 'finish') {
+        return checkOrder(order.paypalId);
+      } else if (order.status === 'approved') {
+        const accountId = order.account;
+        const userId = order.user;
+        push.pushMessage('支付成功', {
+          body: `订单[ ${order.orderId} ][ ${order.amount} ]支付成功`,
         });
-      }).then(() => {
-        logger.info(`订单支付成功: [${ order.orderId }][${ order.amount }][account: ${ accountId }]`);
-        ref.payWithRef(userId, order.orderType);
-        sendSuccessMail(userId);
-      }).catch(err => {
-        logger.error(`订单支付失败: [${ order.orderId }]`, err);
-      });
+        return checkOrder(order.paypalId).then(() => {
+          return account.setAccountLimit(userId, accountId, order.orderType);
+        }).then(() => {
+          return knex('paypal').update({
+            status: 'finish',
+          }).where({
+            orderId: order.orderId,
+          });
+        }).then(() => {
+          logger.info(`订单支付成功: [${order.orderId}][${order.amount}][account: ${accountId}]`);
+          ref.payWithRef(userId, order.orderType);
+          sendSuccessMail(userId);
+        }).catch(err => {
+          logger.error(`订单支付失败: [${order.orderId}]`, err);
+        });
+      }
+      ;
     };
-  };
-  for(const order of orders) {
-    await scanOrder(order);
-  }
-}, 'CheckPaypalOrder', 1);
+    for (const order of orders) {
+      await scanOrder(order);
+    }
+  }, 'CheckPaypalOrder', 1);
+}
 
 const orderList = async (options = {}) => {
   const where = {};
@@ -285,7 +290,11 @@ exports.orderListAndPaging = orderListAndPaging;
 exports.orderList = orderList;
 exports.getUserFinishOrder = getUserFinishOrder;
 
-cron.minute(() => {
-  if(!config.plugins.paypal || !config.plugins.paypal.use) { return; }
-  knex('paypal').delete().where({ status: 'created' }).whereBetween('expireTime', [0, Date.now() - 1 * 24 * 3600 * 1000]).then();
-}, 'DeletePaypalOrder', 30);
+if(config.plugins.paypal && config.plugins.paypal.use) {
+  cron.minute(() => {
+    if (!config.plugins.paypal || !config.plugins.paypal.use) {
+      return;
+    }
+    knex('paypal').delete().where({status: 'created'}).whereBetween('expireTime', [0, Date.now() - 1 * 24 * 3600 * 1000]).then();
+  }, 'DeletePaypalOrder', 30);
+}
